@@ -44,8 +44,8 @@ jobs:
       matrix:
         include:
           - platform: macos-latest
-            target: universal-apple-darwin
-            args: --target universal-apple-darwin
+            target: aarch64-apple-darwin
+            args: --target aarch64-apple-darwin
             bundle_ext: dmg
           - platform: windows-latest
             target: x86_64-pc-windows-msvc
@@ -81,7 +81,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'bun'
 
       - name: Install frontend dependencies
         run: bun install --frozen-lockfile
