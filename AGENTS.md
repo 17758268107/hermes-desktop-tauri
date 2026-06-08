@@ -31,21 +31,23 @@ This workspace uses semantic Hermes swarm workers, not numbered-only lanes. The 
 - **Three services required**: Gateway (:8642) + Dashboard (:9119) + Workspace (:3000). All must be running for full functionality.
   - Gateway: `hermes gateway run`
   - Dashboard: `hermes dashboard --port 9119 --host 127.0.0.1 --no-open`
-  - Workspace: `pnpm dev`
-  - Or use the Electron desktop app: `pnpm electron:dev` (auto-starts all three)
-- **Desktop app**: Full Electron app (`electron/main.cjs`). Double-click to launch — no terminal needed. Auto-detects and spawns gateway (or dashboard if configured).
-- **Build**: `electron:build:win` produces NSIS installer in `release/`.
-- **Dev mode**: `electron:dev` launches Electron in dev mode (builds Vite client first, hot-reloads on change).
-- **Running build output**: `release/win-unpacked/hermes-workspace.exe` (test builds).
-- **Electron:dev fix**: `NODE_ENV=development` prefix doesn't work on Windows — script stripped to just `electron .`.
-- **Windows spawn fixes** (in `electron/main.cjs`): `spawnDetached()` uses `cmd /c` on Windows (not `bash -lc`), log paths use `%TEMP%` (not `/tmp`), `isHermesInstalled()` uses `where hermes`, `installHermesInBackground()` uses `pip install` (not `curl|bash`).
+  - Workspace: `bun run dev` (or `pnpm dev`)
+  - Or use the Tauri desktop app: `pnpm tauri:dev` (auto-starts the Vite dev server inside the webview; gateway/dashboard are managed by the in-app bootstrap wizard)
+- **Desktop app**: Tauri 2 + Rust shell (`src-tauri/`). The webview loads the Vite-built client at `http://127.0.0.1:3000` in dev or `tauri://` in production. The Rust side is responsible for single-instance lock, settings persistence, Hermes Agent install + gateway/dashboard lifecycle, and the `gateway_request` HTTP proxy.
+- **Build (Windows)**: `pnpm tauri:build:win` produces an NSIS installer in `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/`. CI does this automatically on tag push via `.github/workflows/tauri-release.yml`.
+- **Dev mode**: `pnpm tauri:dev` runs the Rust binary, which spawns `bun run dev` (`beforeDevCommand`) and points the webview at `http://127.0.0.1:3000`. Hot-reload works through Vite.
+- **Running build output**: `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/Hermes Workspace_2.4.0_x64-setup.exe` (NSIS installer) and `…/hermes-workspace.exe` (unpacked binary).
+- **Console suppression**: `main.rs` uses `#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]` and `lib.rs` spawns every subprocess with `CREATE_NO_WINDOW` so no console window pops up during install/start.
+- **Windows spawn fixes** (in `src-tauri/src/lib.rs`): `spawn_logged()` uses `cmd /c` on Windows (not `bash -lc`), log paths use `%TEMP%` (not `/tmp`), `is_hermes_installed()` uses `where hermes`, `install_hermes()` uses `pip install hermes-agent` (not `curl|bash`).
 - **Two `.env` files**: Gateway reads `C:\\Users\\<you>\\AppData\\Local\\hermes\\.env`; CLI reads `C:\\Users\\<you>\\.hermes\\.env`; workspace reads `hermes-workspace\\.env`. Keep API keys in sync across all three.
 - **Gateway API server**: Requires `API_SERVER_ENABLED=true` + `API_SERVER_KEY` in the gateway's `.env`. Without these, the gateway starts with no connected platforms.
 - **Workspace env vars**: Runtime reads `CLAUDE_API_URL` / `CLAUDE_API_TOKEN` / `CLAUDE_DASHBOARD_URL` (not `HERMES_*` variants).
 - **sqlite3 CLI**: Not bundled on Windows. Install via `winget install SQLite.SQLite`, then copy `sqlite3.exe` to a Git Bash PATH directory (winget installs to a long path not in PATH).
 - **claude CLI**: Required for Claude Tasks / Conductor features. Install via `npm install -g @anthropic-ai/claude-code`.
 - **Port conflicts**: Use `netstat -ano | findstr :<port>` + `Stop-Process -Id <PID> -Force` (PowerShell) — `lsof` not available in Git Bash on Windows.
-- **PWA install**: Dashboard at `http://127.0.0.1:3000` can be installed as PWA via Chrome/Edge address bar install icon. Prefer Electron build for production.
+- **PWA install**: Dashboard at `http://127.0.0.1:3000` can be installed as PWA via Chrome/Edge address bar install icon. Prefer the Tauri build for production.
 - **Slack invalid_auth**: Expected if Slack tokens aren't configured — ignore, doesn't affect core functionality.
 - **Node version**: Requires Node.js 22+. Check with `node --version`.
-- **`NODE_OPTIONS` stripped**: Windows doesn't support env var prefix in npm scripts — removed from `build` and `electron:dev` scripts.
+- **Bun version**: `1.3.14` (matches CI). Install with `npm install -g bun` or follow https://bun.sh.
+- **Rust toolchain**: Tauri 2 requires stable Rust + MSVC build tools. Install via `winget install Rustlang.Rustup` then `rustup default stable-x86_64-pc-windows-msvc`. The `cargo tauri` CLI is `cargo-tauri 2.11.x` (already pinned in `src-tauri/Cargo.lock`).
+- **Tauri signing key**: `src-tauri/keys/hws.key.pub` is committed (the public half — needed for the webview to verify update signatures). The private half lives only in CI as `TAURI_SIGNING_PRIVATE_KEY` and must NEVER be committed locally.

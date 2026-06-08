@@ -27,5 +27,13 @@ function useGatewayStatus() {
 export function useIsFeatureAvailable(feature: string): boolean | null {
   const { data, isLoading } = useGatewayStatus()
   if (isLoading || !data) return null
-  return data.capabilities[feature] === true
+  // Defensive: the gateway may return `{}` or `{capabilities: null}` when the
+  // endpoint isn't implemented in the running Hermes Agent build (e.g. on a
+  // 404). Without this guard, `data.capabilities[feature]` throws
+  // "Cannot read properties of null (reading 'capabilities')" and the whole
+  // route unmounts.
+  const capabilities = (data as { capabilities?: Record<string, boolean> | null })
+    .capabilities
+  if (!capabilities || typeof capabilities !== 'object') return false
+  return capabilities[feature] === true
 }

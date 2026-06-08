@@ -156,7 +156,21 @@ export function UpdateCenterNotifier() {
   }, [data?.pendingReleaseNotes])
 
   const visibleProducts = useMemo(() => {
-    const products = data ? [data.products.workspace, data.products.agent] : []
+    // The `/api/update/status` route is implemented by our own web server
+    // (`src/routes/api/update/status.ts`), not by the Hermes Agent gateway on
+    // 8642. When the desktop app runs against the gateway the fetch
+    // interceptor normalises the missing endpoint to an empty object, so
+    // `data` is truthy but `data.products` is undefined. Reading
+    // `data.products.workspace` against that throws
+    // "Cannot read properties of undefined (reading 'workspace')". Guard
+    // before dereferencing — the banner is only useful when we have actual
+    // product data anyway.
+    const productsMap = data?.products
+    const products = productsMap
+      ? [productsMap.workspace, productsMap.agent].filter(
+          (p): p is ProductUpdateStatus => Boolean(p),
+        )
+      : []
     return products.filter((product) => {
       // Product decision: only show the top-of-app update banner when a
       // one-click update is actually safe. Dirty checkouts, non-main branches,

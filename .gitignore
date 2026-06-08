@@ -3,6 +3,9 @@ result
 result-*
 .direnv/
 
+# Local logs
+logs/
+
 # Dependencies
 node_modules
 .pnp

@@ -47,6 +47,7 @@ import { ThreeDotsSpinner } from '@/components/ui/three-dots-spinner'
 import BackendUnavailableState from '@/components/backend-unavailable-state'
 import { applyAccentColor } from '@/lib/accent-colors'
 import { getUnavailableReason } from '@/lib/feature-gates'
+import { hermesDesktop } from '@/lib/tauri-bridge'
 import { useFeatureAvailable } from '@/hooks/use-feature-available'
 import { ProviderLogo } from '@/components/provider-logo'
 import {
@@ -66,6 +67,7 @@ import { LOCALE_LABELS,  getLocale, setLocale } from '@/lib/i18n'
 type SectionId =
   | 'claude'
   | 'agent'
+  | 'diagnostics'
   | 'voice'
   | 'display'
   | 'appearance'
@@ -76,6 +78,7 @@ type SectionId =
 const SECTIONS: Array<{ id: SectionId; label: string; icon: any }> = [
   { id: 'claude', label: 'Model & Provider', icon: CloudIcon },
   { id: 'agent', label: 'Agent', icon: Settings02Icon },
+  { id: 'diagnostics', label: 'Desktop Health', icon: ComputerIcon },
   { id: 'voice', label: 'Voice', icon: VolumeHighIcon },
   { id: 'display', label: 'Display', icon: PaintBoardIcon },
   { id: 'appearance', label: 'Theme', icon: PaintBoardIcon },
@@ -2439,6 +2442,180 @@ function DisplayContent() {
   )
 }
 
+type PortStatusItem = {
+  id: string
+  label: string
+  host: string
+  port: number
+  url: string
+  inUse: boolean
+  reachable: boolean
+  status: number
+  error: string
+}
+
+type PortStatus = {
+  ok: boolean
+  checkedAt: number
+  ports: Array<PortStatusItem>
+}
+
+function statusPill(item: PortStatusItem) {
+  if (item.reachable) return { label: 'Reachable', className: 'bg-emerald-100 text-emerald-700' }
+  if (item.inUse) return { label: 'Port in use', className: 'bg-amber-100 text-amber-700' }
+  return { label: 'Free', className: 'bg-primary-100 text-primary-600' }
+}
+
+function DiagnosticsContent() {
+  const [ports, setPorts] = useState<PortStatus | null>(null)
+  const [updates, setUpdates] = useState<{
+    checking: boolean
+    available: boolean
+    downloaded: boolean
+    error: string | null
+    version: string
+    latestVersion?: string | null
+    notes?: string | null
+  } | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  const refreshPorts = useCallback(async () => {
+    setBusy(true)
+    try {
+      const result = await hermesDesktop.diagnostics.ports()
+      if (result) setPorts(result as PortStatus)
+    } finally {
+      setBusy(false)
+    }
+  }, [])
+
+  const refreshUpdates = useCallback(async () => {
+    const state = await hermesDesktop.updates.getState()
+    if (state) setUpdates(state)
+  }, [])
+
+  useEffect(() => {
+    void refreshPorts()
+    void refreshUpdates()
+    const unlistenPromise = hermesDesktop.updates.onStateChange((state) => {
+      setUpdates(state)
+    })
+    return () => {
+      void unlistenPromise.then((unlisten) => unlisten?.())
+    }
+  }, [refreshPorts, refreshUpdates])
+
+  async function checkUpdates() {
+    await hermesDesktop.updates.check()
+    await refreshUpdates()
+  }
+
+  async function installUpdate() {
+    await hermesDesktop.updates.install()
+    await refreshUpdates()
+  }
+
+  return (
+    <div className="space-y-4">
+      <SectionHeader
+        title="Desktop Health"
+        description="Check local Hermes ports and desktop updates through the Tauri runtime."
+      />
+
+      <div className={SETTINGS_CARD_CLASS}>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-primary-900 dark:text-neutral-100">
+              Port Detection
+            </p>
+            <p className="text-xs text-primary-500 dark:text-neutral-400">
+              Workspace keeps port 3000 reserved and checks Hermes service ports locally.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void refreshPorts()}
+            disabled={busy}
+          >
+            {busy ? 'Checking...' : 'Check ports'}
+          </Button>
+        </div>
+        <div className="space-y-2">
+          {(ports?.ports ?? []).map((item) => {
+            const pill = statusPill(item)
+            return (
+              <div
+                key={item.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary-200 bg-primary-50/70 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-900/70"
+              >
+                <div>
+                  <p className="text-sm font-medium text-primary-900 dark:text-neutral-100">
+                    {item.label}
+                  </p>
+                  <p className="text-xs text-primary-500 dark:text-neutral-400">
+                    {item.host}:{item.port} · HTTP {item.status || 'n/a'}
+                  </p>
+                </div>
+                <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', pill.className)}>
+                  {pill.label}
+                </span>
+              </div>
+            )
+          })}
+          {!ports ? (
+            <p className="text-xs text-primary-500 dark:text-neutral-400">
+              Run a port check to see local service status.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className={SETTINGS_CARD_CLASS}>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-primary-900 dark:text-neutral-100">
+              Desktop Auto Update
+            </p>
+            <p className="text-xs text-primary-500 dark:text-neutral-400">
+              Uses the official Tauri updater against outsourc-e/hermes-workspace GitHub Releases.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void checkUpdates()}
+            disabled={updates?.checking === true}
+          >
+            {updates?.checking ? 'Checking...' : 'Check update'}
+          </Button>
+        </div>
+        <div className="space-y-2 text-sm text-primary-700 dark:text-neutral-300">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span>Current version</span>
+            <span className="font-mono">{updates?.version || hermesDesktop.app.version || 'unknown'}</span>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span>Update status</span>
+            <span>
+              {updates?.error
+                ? updates.error
+                : updates?.available
+                  ? `Available ${updates.latestVersion ?? ''}`
+                  : 'Current'}
+            </span>
+          </div>
+          {updates?.available ? (
+            <Button size="sm" onClick={() => void installUpdate()}>
+              Download and install
+            </Button>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function LanguageContent() {
   return (
     <div className="space-y-4">
@@ -2476,6 +2653,7 @@ function LanguageContent() {
 const CONTENT_MAP: Record<SectionId, () => React.JSX.Element> = {
   claude: HermesContent,
   agent: AgentBehaviorContent,
+  diagnostics: DiagnosticsContent,
   voice: VoiceContent,
   display: DisplayContent,
   appearance: AppearanceContent,

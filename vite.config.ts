@@ -580,7 +580,22 @@ const config = defineConfig(({ mode, command }) => {
         projects: ['./tsconfig.json'],
       }),
       tailwindcss(),
-      tanstackStart(),
+      // Enable prerender so `vite build` writes the SSR'd `index.html` into
+      // `dist/client/`. Without this, TanStack Start's `postServerBuild` step
+      // sees an empty `pages` array and disables prerender → no static
+      // `index.html` is emitted, and the Tauri webview falls back to its
+      // "Run bun run build in the project root to replace this with the real
+      // Vite/TanStack Start bundle." placeholder. Tauri 2 desktop loads
+      // `frontendDist` (dist/client) directly via the bundled webview and
+      // cannot reach a separate Nitro server, so the prerendered HTML is the
+      // canonical entry point.
+      tanstackStart({
+        prerender: {
+          enabled: true,
+          failOnError: false,
+          autoStaticPathsDiscovery: true,
+        },
+      }),
       viteReact(),
       {
         name: 'workspace-daemon',

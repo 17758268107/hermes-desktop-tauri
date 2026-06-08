@@ -234,9 +234,9 @@ export function ClaudeOnboarding() {
       }
 
       const data = (await res.json()) as GatewayStatusResponse
-      setBackendInfo(data)
+      setBackendInfo(data ?? null)
 
-      if (data.capabilities?.chatCompletions) {
+      if (data?.capabilities?.chatCompletions) {
         setBackendStatus('ready')
         setBackendMessage(
           data.capabilities.sessions
@@ -246,7 +246,7 @@ export function ClaudeOnboarding() {
         return
       }
 
-      if (data.capabilities?.health) {
+      if (data?.capabilities?.health) {
         setBackendStatus('error')
         setBackendMessage(
           'Backend is reachable, but /v1/chat/completions is not available yet.',
