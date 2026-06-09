@@ -120,6 +120,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # Limit parallel rustc jobs to 2 on 7 GB GitHub-hosted runners
+          # to avoid OOM during the link step of webkit/webkit2gtk/WebView2.
+          CARGO_BUILD_JOBS: '2'
+          RUSTFLAGS: '-C debuginfo=0 -C strip=symbols'
         with:
           projectPath: .
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', inputs.version) }}
