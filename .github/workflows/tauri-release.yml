@@ -71,6 +71,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri -> target
+          cache-on-failure: true
+          shared-key: ${{ matrix.target }}
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
