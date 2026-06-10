@@ -31,6 +31,8 @@ import { SIDEBAR_TOGGLE_EVENT } from '@/hooks/use-global-shortcuts'
 import { useSwipeNavigation } from '@/hooks/use-swipe-navigation'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatPanelToggle } from '@/components/chat-panel-toggle'
+import { CopilotPanel } from '@/components/copilot/copilot-panel'
+import { CopilotPanelToggle } from '@/components/copilot/copilot-panel-toggle'
 import { LoginScreen } from '@/components/auth/login-screen'
 import { MobileTabBar } from '@/components/mobile-tab-bar'
 import { MobileHamburgerMenu } from '@/components/mobile-hamburger-menu'
@@ -438,8 +440,14 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
           {!isOnChatRoute && !isOnPlaygroundRoute && !isChromeFreeSurface && !isMobile && <ChatPanel />}
         </div>
 
+        {/* AI Copilot panel — same surface rules as the chat panel */}
+        {!isOnChatRoute && !isOnPlaygroundRoute && !isChromeFreeSurface && !isMobile && <CopilotPanel />}
+
         {/* Floating chat toggle — visible on non-chat routes (but not in HermesWorld) */}
         {!isChromeFreeSurface && !isOnChatRoute && !isOnPlaygroundRoute && !isMobile && <ChatPanelToggle />}
+
+        {/* Floating Copilot toggle — sits next to the chat toggle */}
+        {!isChromeFreeSurface && !isOnChatRoute && !isOnPlaygroundRoute && !isMobile && <CopilotPanelToggle />}
 
         {showDesktopSidebarBackdrop ? (
           <button

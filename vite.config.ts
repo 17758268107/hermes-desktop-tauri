@@ -470,6 +470,24 @@ const config = defineConfig(({ mode, command }) => {
         'playwright-extra',
         'puppeteer-extra-plugin-stealth',
       ],
+      // Force Vite to transform the CopilotKit packages in the SSR/prerender
+      // graph. Otherwise TanStack Start's Nitro runtime would `import()` the
+      // raw `dist/v2/index.mjs` from node_modules, which contains
+      // `import "./index.css"` — and Node has no loader for .css files,
+      // which crashes prerender with `ERR_UNKNOWN_FILE_EXTENSION`.
+      // The `copilotkit-strip-v2-css-import` plugin above then removes
+      // that single CSS import. NoExternal is the right tool here because
+      // it must run before the SSR module graph is resolved.
+      noExternal: [
+        '@copilotkit/react-core',
+        '@copilotkit/react-ui',
+        '@copilotkit/runtime',
+        '@copilotkit/core',
+        '@copilotkit/shared',
+        '@ag-ui/core',
+        '@ag-ui/client',
+        '@ai-sdk/openai',
+      ],
     },
     optimizeDeps: {
       exclude: [
@@ -580,6 +598,28 @@ const config = defineConfig(({ mode, command }) => {
         projects: ['./tsconfig.json'],
       }),
       tailwindcss(),
+      // CopilotKit v2 ships its CSS as a hardcoded `import "./index.css"`
+      // inside `dist/v2/index.mjs`. That import is fine in the browser
+      // (Vite/CSS plugins handle it) but blows up TanStack Start's prerender
+      // pass, which renders React in Node and cannot resolve .css files
+      // (`ERR_UNKNOWN_FILE_EXTENSION`). We strip that single import and
+      // load the stylesheet explicitly via `?url` from `__root.tsx`'s
+      // head links. No other import statements are touched.
+      {
+        name: 'copilotkit-strip-v2-css-import',
+        enforce: 'pre',
+        transform(code, id) {
+          if (!id.includes('@copilotkit/react-core/dist/v2/index.mjs')) {
+            return null
+          }
+          const stripped = code.replace(
+            /^import\s+["']\.\/index\.css["'];?\s*$/m,
+            '/* css import stripped — see head.links in __root.tsx */',
+          )
+          if (stripped === code) return null
+          return { code: stripped, map: null }
+        },
+      },
       // Enable prerender so `vite build` writes the SSR'd `index.html` into
       // `dist/client/`. Without this, TanStack Start's `postServerBuild` step
       // sees an empty `pages` array and disables prerender → no static

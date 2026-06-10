@@ -8,6 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import appCss from '../styles.css?url'
+import copilotCss from '@copilotkit/react-core/v2/styles.css?url'
 import { getRootSurfaceState } from './-root-layout-state'
 import type {AuthStatus} from '@/lib/claude-auth';
 import '@/lib/tauri-bridge'
@@ -31,6 +32,7 @@ import {
 import { ErrorBoundary } from '@/components/error-boundary'
 import { LoginScreen } from '@/components/auth/login-screen'
 import {  fetchClaudeAuthStatus } from '@/lib/claude-auth'
+import { CopilotProvider } from '@/components/copilot/copilot-provider'
 
 const APP_CSP = [
   "default-src 'self'",
@@ -176,6 +178,13 @@ export const Route = createRootRoute({
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        // CopilotKit v2 styles (chat bubbles, composer, suggestion chips).
+        // Loaded via Vite `?url` to keep TanStack Start's prerender pass
+        // happy — Node cannot import .css directly. See copilot-provider.tsx.
+        rel: 'stylesheet',
+        href: copilotCss,
       },
       {
         rel: 'icon',
@@ -366,6 +375,7 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CopilotProvider>
       <Toaster />
       {mounted && rootSurfaceState.showLogin ? <LoginScreen /> : null}
       {mounted && rootSurfaceState.showOnboarding ? <ClaudeOnboarding /> : null}
@@ -395,6 +405,7 @@ function RootLayout() {
           ) : null}
         </>
       ) : null}
+      </CopilotProvider>
     </QueryClientProvider>
   )
 }

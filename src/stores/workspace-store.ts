@@ -15,6 +15,8 @@ type WorkspaceState = {
   mobileKeyboardOpen: boolean
   mobileKeyboardInset: number
   mobileComposerFocused: boolean
+  /** AI CopilotKit panel visible alongside non-chat routes */
+  copilotPanelOpen: boolean
   toggleSidebar: () => void
   setSidebarCollapsed: (collapsed: boolean) => void
   toggleFileExplorer: () => void
@@ -28,6 +30,8 @@ type WorkspaceState = {
   setMobileKeyboardOpen: (open: boolean) => void
   setMobileKeyboardInset: (inset: number) => void
   setMobileComposerFocused: (focused: boolean) => void
+  toggleCopilotPanel: () => void
+  setCopilotPanelOpen: (open: boolean) => void
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -42,6 +46,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       mobileKeyboardOpen: false,
       mobileKeyboardInset: 0,
       mobileComposerFocused: false,
+      copilotPanelOpen: false,
       toggleSidebar: () =>
         set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
       setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
@@ -60,6 +65,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       setMobileComposerFocused: (focused) =>
         set({ mobileComposerFocused: focused }),
       setChatPanelSessionKey: (key) => set({ chatPanelSessionKey: key }),
+      toggleCopilotPanel: () =>
+        set((s) => ({ copilotPanelOpen: !s.copilotPanelOpen })),
+      setCopilotPanelOpen: (open) => set({ copilotPanelOpen: open }),
     }),
     {
       name: 'hermes-workspace-v1',
