@@ -38,12 +38,26 @@ type RuntimeConfig = {
 const DEFAULT_BASE_URL = 'https://api.openai.com/v1'
 const DEFAULT_MODEL_ID = 'gpt-4o-mini'
 const DEFAULT_SYSTEM_PROMPT = [
-  'You are Hermes Copilot, an AI assistant embedded in the Hermes Workspace',
-  'desktop app. You can see the user\u2019s port status, the OpenClaw gateway,',
-  'Headroom proxy, and the Hermes Agent runtime through frontend tools.',
-  'Prefer concise answers in the user\u2019s language. Confirm before running any',
-  'destructive action (restarting services, deleting files, rotating keys).',
-].join(' ')
+  'You are Hermes Copilot, an AI assistant embedded in the Hermes Workspace desktop app.',
+  '',
+  '## Available Tools',
+  'You have these frontend tools available — call them when the user asks:',
+  '- **getServiceStatus**: Check health of all Hermes services (gateway, headroom, agent, dashboard, webui).',
+  '- **listDirectory(path)**: Browse filesystem directories.',
+  '- **readFile(path)**: Read file contents.',
+  '- **sendTerminalCommand(command)**: Execute shell commands.',
+  '- **getModelList**: List available AI models.',
+  '- **createFile(path, content)**: Create a new file.',
+  '- **restartService(service)**: Restart a service (gateway|headroom|agent|dashboard|webui). DANGEROUS — requires user confirmation.',
+  '- **deleteFile(path)**: Delete a file. DANGEROUS — requires user confirmation.',
+  '',
+  '## Safety Rules',
+  '1. Before calling restartService or deleteFile, warn the user and wait for approval.',
+  '2. Before running any `rm`, `del`, `format`, `shutdown`, or destructive command via sendTerminalCommand, ask the user to confirm.',
+  '3. Prefer concise answers. Speak the user\'s language.',
+  '4. If a tool call fails, explain the error and suggest alternatives.',
+  '5. Never expose API keys, tokens, or secrets in responses.',
+].join('\n')
 
 function readEnvConfig(): RuntimeConfig {
   const apiKey = (process.env.OPENAI_API_KEY ?? '').trim()
@@ -63,11 +77,16 @@ function buildAgent(config: RuntimeConfig) {
   // `createOpenAI` from @ai-sdk/openai yields a callable factory. Passing
   // `baseURL` here lets the same code work with tokendance.space,
   // headroom proxy, or any other OpenAI-compatible endpoint.
+  //
+  // We use `.chat(modelId)` instead of `provider(modelId)` to force the
+  // Chat Completions API (POST /v1/chat/completions). The default
+  // `provider()` route uses the newer Responses API (POST /v1/responses)
+  // which many OpenAI-compatible proxies do not support.
   const provider = createOpenAI({
     apiKey: config.apiKey || 'no-key-configured',
     baseURL: config.baseURL,
   })
-  const model = provider(config.modelId)
+  const model = provider.chat(config.modelId as any)
   return new BuiltInAgent({
     model,
     // BuiltInAgent forwards `prompt` to the Vercel AI SDK streamText call as
@@ -75,9 +94,6 @@ function buildAgent(config: RuntimeConfig) {
     ...(config.systemPrompt ? { prompt: config.systemPrompt } : {}),
   })
 }
-
-let cachedHandler: ((request: Request) => Promise<Response>) | null = null
-let cachedConfigKey: string | null = null
 
 function buildHandler() {
   const config = readEnvConfig()
@@ -88,26 +104,17 @@ function buildHandler() {
   return createCopilotRuntimeHandler({
     runtime,
     basePath: '/api/copilotkit',
-    // The frontend lives on the same origin as the API route, so the
-    // default same-origin policy is fine. Enable CORS if you ever
-    // expose the runtime on a separate host.
+    mode: 'single-route',
     cors: false,
   })
 }
 
 /**
- * Framework-agnostic fetch handler for `/api/copilotkit`. Memoized so we
- * only rebuild the runtime on cold start (and when the relevant env vars
- * change between requests, e.g. during dev hot-reload).
+ * Framework-agnostic fetch handler for `/api/copilotkit`.
+ * Always rebuilds to pick up the latest env vars.
  */
 export function getCopilotKitFetchHandler(): (request: Request) => Promise<Response> {
-  const config = readEnvConfig()
-  const configKey = `${config.apiKey}|${config.baseURL}|${config.modelId}|${config.systemPrompt}`
-  if (!cachedHandler || cachedConfigKey !== configKey) {
-    cachedHandler = buildHandler()
-    cachedConfigKey = configKey
-  }
-  return cachedHandler
+  return buildHandler()
 }
 
 /**

@@ -3,22 +3,31 @@
  *
  * Mirrors the visual chrome of `ChatPanel` (a 420 px right-anchored
  * slide-in with header + close button) but renders CopilotKit's
- * `<CopilotChat>` as the body. The CopilotKit provider must wrap the
- * app higher up in the tree — see `copilot-provider.tsx`.
+ * `<CopilotChat>` as the body.
  *
- * The panel is wired to `useWorkspaceStore.copilotPanelOpen` so it
- * composes cleanly with the existing chat panel, file explorer, and
- * focus mode toggles.
+ * ## Features
  *
- * Note: the API key for the underlying LLM lives in `process.env`
- * on the server (see `src/server/copilotkit-runtime.ts`). The browser
- * only ever talks to `/api/copilotkit`, so the key never leaks.
+ * - **Hermes Tools**: Agent can call `/api/swarm-health`, `/api/files`,
+ *   `/api/terminal-input`, `/api/models`, etc. via `useFrontendTool`.
+ * - **HITL Confirmation**: Dangerous actions (restart, delete) show a
+ *   confirmation dialog in chat before executing.
+ * - **Threads**: Saved in localStorage, selectable via header dropdown.
+ *   Each thread has an independent conversation history.
+ * - **LLM Status**: Shows the configured model and base URL in the header.
  */
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'motion/react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Cancel01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
-import { CopilotChat } from '@copilotkit/react-core/v2'
+import {
+  Cancel01Icon,
+  SparklesIcon,
+  Message01Icon,
+  ArrowDown01Icon,
+  PlusSignIcon,
+  Delete01Icon,
+} from '@hugeicons/core-free-icons'
+import { CopilotChat, CopilotChatConfigurationProvider } from '@copilotkit/react-core/v2'
 import { Button } from '@/components/ui/button'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import {
@@ -27,6 +36,8 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useHermesTools, loadThreads, saveThread, deleteSavedThread, getActiveThreadId, setActiveThreadId } from './hermes-tools'
+import type { SavedThread } from './hermes-tools'
 
 type CopilotStatus = {
   ok: boolean
@@ -37,10 +48,187 @@ type CopilotStatus = {
   endpoint: string
 }
 
+// ---------------------------------------------------------------------------
+// Thread Selector Dropdown
+// ---------------------------------------------------------------------------
+
+function ThreadSelector({
+  activeThreadId,
+  onSelect,
+}: {
+  activeThreadId: string | null
+  onSelect: (threadId: string | null) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [threads, setThreads] = useState<SavedThread[]>(() => loadThreads())
+
+  const refreshThreads = useCallback(() => {
+    setThreads(loadThreads())
+  }, [])
+
+  useEffect(() => {
+    refreshThreads()
+  }, [activeThreadId, refreshThreads])
+
+  useEffect(() => {
+    if (!open) return
+    const handleClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  const handleCreateThread = useCallback(() => {
+    const id = `thread-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    const now = new Date().toISOString()
+    const newThread: SavedThread = {
+      id,
+      name: `Conversation ${threads.length + 1}`,
+      createdAt: now,
+    }
+    saveThread(newThread)
+    setActiveThreadId(id)
+    onSelect(id)
+    refreshThreads()
+    setOpen(false)
+  }, [threads.length, onSelect, refreshThreads])
+
+  const activeThread = threads.find((t) => t.id === activeThreadId)
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[11px] font-medium transition-colors hover:border-[var(--theme-accent)]"
+        style={{
+          borderColor: 'var(--theme-border)',
+          color: 'var(--primary-600)',
+          background: 'var(--theme-bg)',
+        }}
+      >
+        <HugeiconsIcon icon={Message01Icon} size={12} strokeWidth={1.5} />
+        <span className="max-w-[80px] truncate">
+          {activeThread?.name ?? 'New Chat'}
+        </span>
+        <HugeiconsIcon
+          icon={ArrowDown01Icon}
+          size={10}
+          strokeWidth={1.5}
+          className={open ? 'rotate-180' : ''}
+          style={{ transition: 'transform 0.15s' }}
+        />
+      </button>
+
+      {open && (
+        <div
+          className="absolute left-0 top-full mt-1 w-[220px] rounded-xl border shadow-lg z-[100] py-1"
+          style={{
+            borderColor: 'var(--theme-border)',
+            background: 'var(--theme-bg)',
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleCreateThread}
+            className="flex w-full items-center gap-2 px-3 py-2 text-[12px] font-medium transition-colors hover:bg-[var(--theme-card)]"
+            style={{ color: 'var(--theme-accent)' }}
+          >
+            <HugeiconsIcon icon={PlusSignIcon} size={12} strokeWidth={1.5} />
+            New Conversation
+          </button>
+
+          {threads.length > 0 && (
+            <div
+              className="mx-2 my-1 border-t"
+              style={{ borderColor: 'var(--theme-border)' }}
+            />
+          )}
+
+          {threads.length === 0 && (
+            <div
+              className="px-3 py-3 text-[11px] text-center"
+              style={{ color: 'var(--primary-500)' }}
+            >
+              No saved conversations
+            </div>
+          )}
+
+          <div className="max-h-[200px] overflow-y-auto">
+            {threads.map((thread) => (
+              <div
+                key={thread.id}
+                className="flex items-center gap-1 px-1"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSelect(thread.id)
+                    setOpen(false)
+                  }}
+                  className="flex-1 text-left px-2 py-1.5 text-[12px] rounded-lg transition-colors truncate hover:bg-[var(--theme-card)]"
+                  style={{
+                    color: thread.id === activeThreadId ? 'var(--theme-accent)' : 'var(--primary-700)',
+                    fontWeight: thread.id === activeThreadId ? 600 : 400,
+                  }}
+                >
+                  {thread.name}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (thread.id === activeThreadId) {
+                      onSelect(null)
+                    }
+                    deleteSavedThread(thread.id)
+                    refreshThreads()
+                  }}
+                  className="shrink-0 p-1 rounded-md transition-colors hover:bg-red-100"
+                  style={{ color: 'var(--primary-400)' }}
+                  aria-label={`Delete ${thread.name}`}
+                >
+                  <HugeiconsIcon icon={Delete01Icon} size={10} strokeWidth={1.5} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// CopilotToolsLayer — mounts tools and HITL inside the CopilotKit context
+// ---------------------------------------------------------------------------
+
+function CopilotToolsLayer({ children }: { children: React.ReactNode }) {
+  useHermesTools()
+  return <>{children}</>
+}
+
+// ---------------------------------------------------------------------------
+// CopilotPanel main component
+// ---------------------------------------------------------------------------
+
 export function CopilotPanel() {
   const isOpen = useWorkspaceStore((s) => s.copilotPanelOpen)
   const setCopilotPanelOpen = useWorkspaceStore((s) => s.setCopilotPanelOpen)
 
+  // Thread management
+  const [threadId, setThreadId] = useState<string | null>(() => getActiveThreadId())
+
+  const handleThreadSelect = useCallback((newThreadId: string | null) => {
+    setThreadId(newThreadId)
+    setActiveThreadId(newThreadId)
+  }, [])
+
+  // LLM status
   const statusQuery = useQuery({
     queryKey: ['copilotkit-status'],
     queryFn: async (): Promise<CopilotStatus> => {
@@ -78,9 +266,9 @@ export function CopilotPanel() {
               borderColor: 'var(--theme-border)',
             }}
           >
-            {/* Panel header */}
+            {/* Panel header with Thread selector */}
             <div
-              className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+              className="flex items-center justify-between h-10 px-3 border-b shrink-0 gap-2"
               style={{ borderColor: 'var(--theme-border)' }}
             >
               <div className="flex items-center gap-1.5 min-w-0">
@@ -90,13 +278,19 @@ export function CopilotPanel() {
                   strokeWidth={1.5}
                   className="text-accent-500"
                 />
-                <span className="text-xs font-medium text-primary-700 truncate max-w-[260px]">
+                <span className="text-xs font-medium text-primary-700 truncate max-w-[120px]">
                   Hermes Copilot
                   {statusQuery.data?.modelId ? (
-                    <span className="ml-1.5 opacity-60">· {statusQuery.data.modelId}</span>
+                    <span className="ml-1 opacity-60">· {statusQuery.data.modelId}</span>
                   ) : null}
                 </span>
               </div>
+
+              <ThreadSelector
+                activeThreadId={threadId}
+                onSelect={handleThreadSelect}
+              />
+
               <div className="flex items-center gap-0.5">
                 <TooltipProvider>
                   <TooltipRoot>
@@ -123,12 +317,8 @@ export function CopilotPanel() {
               </div>
             </div>
 
-            {/* Panel body — CopilotChat. The component owns its own scroll,
-                composer, and message rendering. We just constrain height. */}
-            <div
-              className="flex-1 min-h-0"
-              data-testid="copilot-panel-body"
-            >
+            {/* Panel body */}
+            <div className="flex-1 min-h-0" data-testid="copilot-panel-body">
               {statusQuery.data && !statusQuery.data.apiKeyConfigured ? (
                 <div className="px-4 py-6 text-xs text-primary-600 space-y-2">
                   <p className="font-medium text-primary-800">
@@ -145,13 +335,24 @@ export function CopilotPanel() {
                   </p>
                 </div>
               ) : (
-                <CopilotChat
+                <CopilotChatConfigurationProvider
+                  threadId={threadId ?? undefined}
                   labels={{
                     modalHeaderTitle: 'Hermes Copilot',
                     welcomeMessageText:
-                      'Hi! Ask me about ports, services, or Hermes commands.',
+                      'Hi! Ask me about ports, services, files, or terminal commands. I can check service health, browse files, and run commands for you.',
                   }}
-                />
+                >
+                  <CopilotToolsLayer>
+                    <CopilotChat
+                      labels={{
+                        modalHeaderTitle: 'Hermes Copilot',
+                        welcomeMessageText:
+                          'Hi! Ask me about ports, services, files, or terminal commands. I can check service health, browse files, and run commands for you.',
+                      }}
+                    />
+                  </CopilotToolsLayer>
+                </CopilotChatConfigurationProvider>
               )}
             </div>
           </motion.div>
