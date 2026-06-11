@@ -46,7 +46,7 @@
     "shortDescription": "Desktop workspace for Hermes Agent \u2014 chat, orchestration, multi-agent pipelines.",
     "longDescription": "Hermes Workspace is the native desktop shell for Hermes Agent. It walks you through first-run install of Hermes, manages the local Gateway + Dashboard lifecycle, and gives you a single window for chat, sessions, memory, skills, MCP, jobs, terminal, and Swarm dispatch. Tauri 2 + Bun + Vite + TanStack Start underneath; official Hermes install script under the hood.",
     "homepage": "https://github.com/outsourc-e/hermes-workspace",
-    "createUpdaterArtifacts": true,
+    "createUpdaterArtifacts": false,
     "windows": {
       "nsis": {
         "installMode": "currentUser",
