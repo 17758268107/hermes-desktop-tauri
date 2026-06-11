@@ -7,7 +7,7 @@
 
 **Your AI agent's command center — chat, files, memory, skills, and terminal in one place.**
 
-[![Version](https://img.shields.io/badge/version-2.3.0-2557b7.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.4.1-2557b7.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-6366F1.svg)](CONTRIBUTING.md)
@@ -636,16 +636,22 @@ Access Hermes Workspace from anywhere on your devices — no port forwarding, no
 
 ## 🖥️ Native Desktop App
 
-> **Status: In Development** — A native Electron-based desktop app is in active development.
+> **Status: Available** — A native [Tauri](https://v2.tauri.app/)-based desktop app with Windows, macOS, and Linux support.
 
-The desktop app will offer:
+Download the latest installer from [GitHub Releases](https://github.com/17758268107/hermes-desktop-tauri/releases):
 
+| Platform | Installer |
+|----------|-----------|
+| Windows | `Hermes.Workspace_2.4.1_x64-setup.exe` (NSIS) or `.msi` |
+| macOS (Apple Silicon) | `Hermes.Workspace_2.4.1_aarch64.dmg` |
+| Linux | `.AppImage`, `.deb`, or `.rpm` |
+
+Features:
 - Native window management and tray icon
 - System notifications for agent events and mission completions
 - Auto-launch on startup
 - Deep OS integration (macOS menu bar, Windows taskbar)
-
-**In the meantime:** Install Hermes Workspace as a PWA (see above) for a near-native desktop experience — it works great.
+- Built-in auto-update support
 
 ---
 

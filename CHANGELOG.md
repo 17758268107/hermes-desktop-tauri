@@ -10,18 +10,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [2.4.1] — 2026-06-11
 
-**Repo governance + documentation polish release.** No code changes; CI, templates, and docs only.
+**Auto-update support + repo governance + documentation polish release.**
 
 ### Added
+- **Auto-update support** — Tauri updater artifacts enabled with new signing key; desktop app can now check for and install updates automatically
 - **4 Issue templates** — bug report, feature request, question, security (YAML structured forms)
 - **PR template** — full review checklist with summary, linked issues, type/scope, test plan, risk & rollout, release notes
 - **Dependabot** — weekly auto-updates for npm (4 groups: tauri / react / ai / tooling), cargo, github-actions, docker
 - **`docs/README.md`** — top-level documentation index (Architecture / Desktop / Swarm / Operations / Performance / HermesWorld / Playground / Design)
+- **`.editorconfig`** — cross-platform editor configuration for consistent formatting
 
 ### Changed
 - **`CHANGELOG.md`** — backfilled v2.4.0 entry (CopilotKit v2 + Tauri NSIS installer)
 - **`CODEOWNERS`** — replaced stale `@outsourc-e` references with `@17758268107` (sole repo collaborator)
 - **Version bump** — package.json, tauri.conf.json, Cargo.toml → 2.4.1
+- **README.md** — updated version badge to 2.4.1; updated "Native Desktop App" section to reflect Tauri status with download links
+- **CI workflow** — fixed `--no-frozen-lockfile` to `--frozen-lockfile`; cleaned up lint/typecheck fallbacks
+- **package.json scripts** — added `typecheck`, `format:check`; fixed `format` script to include `--write .`
+- **Vite config** — added `build.rollupOptions.external` for CopilotKit SSR build resolution
+
+### Fixed
+- **SSR build error** — `@copilotkit/runtime/v2` import resolution in Vite 7.x production builds
 
 ### Migration
 None. Documentation and CI config only. No breaking changes, no new dependencies.
@@ -63,6 +72,23 @@ None. Documentation and CI config only. No breaking changes, no new dependencies
 ## [2.3.0] — 2026-05-28
 
 **Stability + token-cost dashboard release.** Sessions intelligence, cost ledger, cache efficiency, and the new agent-hub.
+
+## [2.2.0] — 2026-05-15
+
+**Operations + Conductor release.** Agent registry, sessions manager, and mission-control surface.
+
+### Added
+- **Operations** (`/operations`) — agent registry / sessions manager; pause, steer, kill live agents
+- **Conductor** (`/conductor`) — mission-control surface; spawn missions, assign workers, watch live output
+
+## [2.1.0] — 2026-05-01
+
+**Skills + MCP release.** Skills management, MCP integration, and enhanced chat experience.
+
+### Added
+- **Skills management** — browse, install, and configure agent skills
+- **MCP integration** — Model Context Protocol support for external tool connections
+- **Enhanced chat** — improved streaming, tool-call rendering, and session persistence
 
 ## [2.0.0] — 2026-04-20
 
