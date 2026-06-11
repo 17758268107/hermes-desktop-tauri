@@ -1,0 +1,90 @@
+name: 💡 Feature Request
+description: Suggest a new feature, integration, or improvement to Hermes Workspace.
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      heading: "Thanks for suggesting a feature!"
+      value: |
+        A great feature request answers four questions: **what**, **why**,
+        **how (your idea)**, and **alternatives**. Keep it short — under
+        200 words is ideal.
+
+  - type: input
+    id: title
+    attributes:
+      label: One-line title
+      description: "Imperative form: 'Add X', 'Support Y', 'Replace Z with W'"
+      placeholder: "Add a /metrics page for the OpenClaw gateway"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of Hermes Workspace does this affect?
+      options:
+        - CopilotKit (AI agent)
+        - Tauri desktop shell
+        - Hermes Agent integration
+        - OpenClaw / MCP
+        - Memory (MemOS / agentmemory)
+        - UI / UX
+        - Build / CI / Release
+        - Documentation
+        - Other
+      validations:
+        required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: "What is the user pain? \"I currently have to do X, which is painful because Y.\""
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: "Sketch the feature: what does the UI look like, what API does it call, what config does it need?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: "What else did you consider? Why is your preferred approach better?"
+    validations:
+      false
+
+  - type: textarea
+    id: mocks
+    attributes:
+      label: Mocks / screenshots / references
+      description: "Optional. Links to similar features in other tools are very helpful."
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: I am willing to file a follow-up PR implementing this feature.
+        - label: This is a breaking change and should be discussed in a GitHub Discussion first.
+        - label: This adds a new dependency / service to the project.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (your view)
+      options:
+        - P0 — blocking my work
+        - P1 — important, blocks a team / project
+        - P2 — nice-to-have, would use weekly
+        - P3 — cosmetic / exploratory
+      validations:
+        required: true
