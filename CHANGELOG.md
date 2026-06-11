@@ -8,6 +8,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - **`docker compose up` now pulls pre-built images by default** (#82) — `nousresearch/hermes-agent:latest` for the gateway and `ghcr.io/outsourc-e/hermes-workspace:latest` for the UI. Agent state persists in the `claude-data` named volume. Adds `docker-compose.dev.yml` overlay for building from source.
 
+## [Unreleased]
+
+## [2.4.0] — 2026-06-11
+
+**CopilotKit v2 Phase 2 — Tauri-native AI agent + GitHub Release pipeline.**
+
+### Added
+- **CopilotKit v2 embedded AI agent** — floating ✨ button on every screen, 420px sliding chat panel powered by `@copilotkit/react-core` v1.59 (v2 protocol)
+- **Human-in-the-Loop interrupts** — sensitive tool calls trigger a confirmation modal via `useInterrupt`
+- **Threads + cross-session memory** — `useThreads()` with `localStorage` persistence (`hermes.copilotkit.threads`)
+- **8 Frontend Tools** registered with the agent: `list_jobs`, `run_skill`, `search_memory`, `add_memory`, `mcp_call`, `gateway_health`, `get_settings`, `update_settings`
+- **NSIS Tauri installer** — GitHub Release `v2.4.0` ships `Hermes Workspace_2.4.0_x64-setup.exe` (39.5 MB, Windows x64, currentUser mode)
+- **`GET /api/copilotkit-status`** — runtime endpoint exposing LLM config and reachability of headroom proxy
+- **CI/CD hardening** — Tauri release workflow triggered on `v*.*.*` tags; Docker smoke-test job on push to `main`; CodeQL security audit
+
+### Changed
+- **API base URL** — CopilotKit now uses `provider.chat()` to force Chat Completions (`/v1/chat/completions`) via the local **headroom proxy** (`127.0.0.1:8787`) instead of pointing directly at `tokendance.space`
+- **Vite SSR body stream handling** — fixes `POST 400` errors on CopilotKit chat submissions
+- **Single-route CopilotKit endpoint** — `copilotkit.ts` consolidates the runtime onto `/api/copilotkit`
+- **Cargo build jobs** limited to 2 + debuginfo stripped to fit 7 GB GitHub runner budget
+- **rust-cache** hardened with cache-on-failure + shared-key per target
+- **Bun cache** removed for `aarch64-apple-darwin`; Windows signing key import forced into bash shell
+
+### Fixed
+- **API 405 Method Not Allowed** on CopilotKit transport by routing through `provider.chat()`
+- **BASE_URL redirection** — `.env` now points at headroom proxy `http://127.0.0.1:8787/v1`
+- **Tauri NSIS build** — bash shell forced on Windows runner so `signtool` import works
+
+### Security
+- **CodeQL weekly scan** added (`.github/workflows/security.yml`)
+- **No new outbound dependencies** beyond `@copilotkit/*` v1.59
+
+### Migration
+- No breaking API changes. Users on v2.3.0 can upgrade in place; the headroom proxy requirement is the only new local assumption (already shipped with the desktop app).
+- `.env` consumers: update `OPENAI_BASE_URL=http://127.0.0.1:8787/v1` and `COPILOTKIT_MODEL=deepseek-v4-flash`.
+
+## [2.3.0] — 2026-05-28
+
+**Stability + token-cost dashboard release.** Sessions intelligence, cost ledger, cache efficiency, and the new agent-hub.
+
 ## [2.0.0] — 2026-04-20
 
 **Zero-fork release.** Clone, don't fork. Hermes Workspace now runs on vanilla `pip install hermes-agent` with no patches, no drift, no custom gateway required.

@@ -1,0 +1,34 @@
+name: ❓ Question
+description: Ask a question about installation, configuration, or usage. For bugs use the Bug Report template; for security use SECURITY.md.
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      heading: "Quick help"
+      value: |
+        Please skim the docs first — most questions are answered there:
+
+        - [README](../../README.md) — quick start, prerequisites, features
+        - [docs/](../../docs/) — long-form guides
+        - [SECURITY.md](../../SECURITY.md) — **never** post secrets or security issues here
+
+  - type: input
+    id: question
+    attributes:
+      label: Your question (one sentence)
+      placeholder: "How do I point CopilotKit at a self-hosted OpenAI-compatible endpoint?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What have you already tried?
+      description: "Show us your search path. Linking to the doc page / issue / discussion you read is super helpful."
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment (optional)
+      description: "OS, version, install method, relevant .env values (redact keys!)."

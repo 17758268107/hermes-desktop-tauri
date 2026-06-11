@@ -1,0 +1,143 @@
+name: 🐛 Bug Report
+description: Report broken behavior, a crash, or unexpected output in Hermes Workspace.
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      heading: "Before you file a bug"
+      value: |
+        Thanks for taking the time to file a bug! A few quick checks will
+        dramatically speed up triage:
+
+        1. Search [existing issues](../../issues?q=is%3Aissue) — your bug may already be tracked.
+        2. Confirm the issue is **reproducible** on the latest release.
+        3. **Do NOT** include secrets (API keys, tokens, .env contents) in this report.
+        4. For **security** issues, follow [SECURITY.md](../../SECURITY.md) and **do not** file a public issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: Hermes Workspace version
+      description: "e.g. 2.4.0 (see the ✨ Sparkles panel footer or Settings → About)"
+      placeholder: "2.4.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Where are you running Hermes Workspace?
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS 15
+        - macOS 14
+        - Linux (Ubuntu 24.04)
+        - Linux (Ubuntu 22.04)
+        - Linux (other)
+        - Docker (GHCR image)
+        - Web browser only
+      validations:
+        required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: Install method
+      options:
+        - Tauri installer (.exe / .msi / .dmg / .deb)
+        - Docker (`docker compose up`)
+        - From source (`bun run dev`)
+        - Other
+      validations:
+        required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: A clear, concise description of the bug. Avoid "it doesn't work" — explain what you saw vs. what you expected.
+      placeholder: |
+        I clicked the ✨ Sparkles button and expected a chat panel to slide in.
+        Instead, nothing happened. DevTools console showed:
+          TypeError: Cannot read property 'threads' of undefined
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal reproduction steps. Number them 1, 2, 3…
+      value: |
+        1. Launch Hermes Workspace 2.4.0
+        2. Click the ✨ button on `/dashboard`
+        3. Type "list my jobs"
+        4. Observe …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: |
+        Paste relevant logs (redact secrets!) and attach screenshots / screen recordings.
+        For dev-server issues, include the terminal output of `bun run dev` or
+        `cargo tauri dev`. For CopilotKit issues, include the JSON body of the
+        failing `POST /api/copilotkit` request (via browser DevTools → Network).
+      render: shell
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Fill in whatever applies; delete the rest.
+        ```
+        OS:         Windows 11 23H2 (build 22631.3007)
+        Node:       22.11.0
+        Bun:        1.3.14
+        Rust:       1.96.0
+        Tauri CLI:  2.11.2
+        Hermes Agent: 0.10.2  (gateway on :8642)
+        headroom proxy: 0.24.0 (on :8787)
+        OpenClaw:  0.9.27 (on :18789)
+        ```
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How bad is the impact?
+      options:
+        - "S0 — Critical (data loss, security, install broken)"
+        - "S1 — High (core feature unusable, no workaround)"
+        - "S2 — Medium (works but annoying, has a workaround)"
+        - "S3 — Low (cosmetic / polish)"
+      validations:
+        required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Final checks
+      options:
+        - label: I have searched existing issues and confirmed this is not a duplicate.
+          required: true
+        - label: I have redacted all secrets (API keys, tokens, passwords) from logs.
+          required: true
+        - label: I can reproduce this on the latest release (or specify the version in the field above).
+          required: true

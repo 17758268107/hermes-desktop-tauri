@@ -1,0 +1,134 @@
+version: 2
+# Hermes Workspace — Dependabot config
+#
+# Keeps npm, cargo, and GitHub Actions dependencies fresh via weekly PRs.
+# Each ecosystem is grouped to minimise noise and produce one PR per group
+# per week.  Ignored majors are intentional and documented.
+
+updates:
+  # ── Node.js / Bun packages ──────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "npm"
+    groups:
+      # Tauri + Rust-adjacent (often need to be upgraded together)
+      tauri:
+        patterns:
+          - "@tauri-apps/*"
+          - "tauri*"
+        update-types:
+          - "minor"
+          - "patch"
+      # React core
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+      # AI / CopilotKit / Vercel AI SDK
+      ai:
+        patterns:
+          - "@copilotkit/*"
+          - "@ai-sdk/*"
+          - "ai"
+        update-types:
+          - "minor"
+          - "patch"
+      # Code quality / build tooling
+      tooling:
+        patterns:
+          - "typescript"
+          - "vite"
+          - "vitest"
+          - "eslint"
+          - "prettier"
+          - "@tanstack/*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Major bumps need human review (often break SSR or Vite config)
+    ignore:
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@tanstack/*"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps(npm)"
+      include: "scope"
+
+  # ── Rust crates ─────────────────────────────────────────────────────────
+  - package-ecosystem: "cargo"
+    directory: "/src-tauri"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "rust"
+    groups:
+      tauri:
+        patterns:
+          - "tauri*"
+          - "tao"
+          - "wry"
+        update-types:
+          - "minor"
+          - "patch"
+      webview2:
+        patterns:
+          - "webview2-com*"
+        update-types:
+          - "minor"
+          - "patch"
+    commit-message:
+      prefix: "deps(cargo)"
+      include: "scope"
+
+  # ── GitHub Actions ──────────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci(actions)"
+      include: "scope"
+
+  # ── Docker base images (root Dockerfile) ───────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"

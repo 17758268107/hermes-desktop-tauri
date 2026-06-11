@@ -1,0 +1,16 @@
+name: 🔒 Security Report
+description: PRIVATE channel for security issues. Do NOT use the public bug-report template.
+labels: ["security"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      heading: "STOP — Use the private disclosure channel"
+      value: |
+        **Please do not file security issues publicly.** Follow
+        [SECURITY.md](../../SECURITY.md) for the private disclosure
+        process (typically GitHub Security Advisories or a maintainer email).
+
+        This template is here so the public issue form has *some* path —
+        GitHub will auto-close public security issues and route you to
+        SECURITY.md.
