@@ -8,7 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - **`docker compose up` now pulls pre-built images by default** (#82) — `nousresearch/hermes-agent:latest` for the gateway and `ghcr.io/outsourc-e/hermes-workspace:latest` for the UI. Agent state persists in the `claude-data` named volume. Adds `docker-compose.dev.yml` overlay for building from source.
 
-## [Unreleased]
+## [2.4.1] — 2026-06-11
+
+**Repo governance + documentation polish release.** No code changes; CI, templates, and docs only.
+
+### Added
+- **4 Issue templates** — bug report, feature request, question, security (YAML structured forms)
+- **PR template** — full review checklist with summary, linked issues, type/scope, test plan, risk & rollout, release notes
+- **Dependabot** — weekly auto-updates for npm (4 groups: tauri / react / ai / tooling), cargo, github-actions, docker
+- **`docs/README.md`** — top-level documentation index (Architecture / Desktop / Swarm / Operations / Performance / HermesWorld / Playground / Design)
+
+### Changed
+- **`CHANGELOG.md`** — backfilled v2.4.0 entry (CopilotKit v2 + Tauri NSIS installer)
+- **`CODEOWNERS`** — replaced stale `@outsourc-e` references with `@17758268107` (sole repo collaborator)
+- **Version bump** — package.json, tauri.conf.json, Cargo.toml → 2.4.1
+
+### Migration
+None. Documentation and CI config only. No breaking changes, no new dependencies.
 
 ## [2.4.0] — 2026-06-11
 
