@@ -11,7 +11,7 @@
 #
 FROM tianon/gosu:1.17-bookworm AS gosu_source
 # ─── build stage ─────────────────────────────────────────────────────────
-FROM node:22-slim AS build
+FROM node:26-slim AS build
 RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
@@ -25,7 +25,7 @@ ENV CI=true
 RUN pnpm build
 
 # ─── runtime stage ────────────────────────────────────────────────────────
-FROM node:22-slim
+FROM node:26-slim
 # python3 is required by scripts/pty-helper.py (terminal feature). Originally
 # added in PR #185 for issue #161; regressed by the 2026-05-01 rename commit
 # efcb7d14 and re-added here per issue #259.
