@@ -591,7 +591,7 @@ const config = defineConfig(({ mode, command }) => {
       // canonical entry point.
       tanstackStart({
         prerender: {
-          enabled: true,
+          enabled: !process.env.CI,
           failOnError: false,
           autoStaticPathsDiscovery: true,
         },

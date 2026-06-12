@@ -13,6 +13,7 @@ jobs:
   build:
     name: Build & Lint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -42,6 +43,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          CI: "true"
 
       - name: Verify build output
         run: |
