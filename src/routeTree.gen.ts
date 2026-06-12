@@ -95,6 +95,8 @@ import { Route as ApiGatewayReprobeRouteImport } from './routes/api/gateway-repr
 import { Route as ApiFilesRouteImport } from './routes/api/files'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiCrewStatusRouteImport } from './routes/api/crew-status'
+import { Route as ApiCopilotkitStatusRouteImport } from './routes/api/copilotkit-status'
+import { Route as ApiCopilotkitRouteImport } from './routes/api/copilotkit'
 import { Route as ApiContextUsageRouteImport } from './routes/api/context-usage'
 import { Route as ApiConnectionStatusRouteImport } from './routes/api/connection-status'
 import { Route as ApiConnectionSettingsRouteImport } from './routes/api/connection-settings'
@@ -601,6 +603,16 @@ const ApiCrewStatusRoute = ApiCrewStatusRouteImport.update({
   path: '/api/crew-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCopilotkitStatusRoute = ApiCopilotkitStatusRouteImport.update({
+  id: '/api/copilotkit-status',
+  path: '/api/copilotkit-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCopilotkitRoute = ApiCopilotkitRouteImport.update({
+  id: '/api/copilotkit',
+  path: '/api/copilotkit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiContextUsageRoute = ApiContextUsageRouteImport.update({
   id: '/api/context-usage',
   path: '/api/context-usage',
@@ -1021,6 +1033,8 @@ export interface FileRoutesByFullPath {
   '/api/connection-settings': typeof ApiConnectionSettingsRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
+  '/api/copilotkit': typeof ApiCopilotkitRoute
+  '/api/copilotkit-status': typeof ApiCopilotkitStatusRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
@@ -1182,6 +1196,8 @@ export interface FileRoutesByTo {
   '/api/connection-settings': typeof ApiConnectionSettingsRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
+  '/api/copilotkit': typeof ApiCopilotkitRoute
+  '/api/copilotkit-status': typeof ApiCopilotkitStatusRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
@@ -1345,6 +1361,8 @@ export interface FileRoutesById {
   '/api/connection-settings': typeof ApiConnectionSettingsRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
+  '/api/copilotkit': typeof ApiCopilotkitRoute
+  '/api/copilotkit-status': typeof ApiCopilotkitStatusRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
@@ -1509,6 +1527,8 @@ export interface FileRouteTypes {
     | '/api/connection-settings'
     | '/api/connection-status'
     | '/api/context-usage'
+    | '/api/copilotkit'
+    | '/api/copilotkit-status'
     | '/api/crew-status'
     | '/api/events'
     | '/api/files'
@@ -1670,6 +1690,8 @@ export interface FileRouteTypes {
     | '/api/connection-settings'
     | '/api/connection-status'
     | '/api/context-usage'
+    | '/api/copilotkit'
+    | '/api/copilotkit-status'
     | '/api/crew-status'
     | '/api/events'
     | '/api/files'
@@ -1832,6 +1854,8 @@ export interface FileRouteTypes {
     | '/api/connection-settings'
     | '/api/connection-status'
     | '/api/context-usage'
+    | '/api/copilotkit'
+    | '/api/copilotkit-status'
     | '/api/crew-status'
     | '/api/events'
     | '/api/files'
@@ -1995,6 +2019,8 @@ export interface RootRouteChildren {
   ApiConnectionSettingsRoute: typeof ApiConnectionSettingsRoute
   ApiConnectionStatusRoute: typeof ApiConnectionStatusRoute
   ApiContextUsageRoute: typeof ApiContextUsageRoute
+  ApiCopilotkitRoute: typeof ApiCopilotkitRoute
+  ApiCopilotkitStatusRoute: typeof ApiCopilotkitStatusRoute
   ApiCrewStatusRoute: typeof ApiCrewStatusRoute
   ApiEventsRoute: typeof ApiEventsRoute
   ApiFilesRoute: typeof ApiFilesRoute
@@ -2687,6 +2713,20 @@ declare module '@tanstack/react-router' {
       path: '/api/crew-status'
       fullPath: '/api/crew-status'
       preLoaderRoute: typeof ApiCrewStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/copilotkit-status': {
+      id: '/api/copilotkit-status'
+      path: '/api/copilotkit-status'
+      fullPath: '/api/copilotkit-status'
+      preLoaderRoute: typeof ApiCopilotkitStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/copilotkit': {
+      id: '/api/copilotkit'
+      path: '/api/copilotkit'
+      fullPath: '/api/copilotkit'
+      preLoaderRoute: typeof ApiCopilotkitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/context-usage': {
@@ -3464,6 +3504,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiConnectionSettingsRoute: ApiConnectionSettingsRoute,
   ApiConnectionStatusRoute: ApiConnectionStatusRoute,
   ApiContextUsageRoute: ApiContextUsageRoute,
+  ApiCopilotkitRoute: ApiCopilotkitRoute,
+  ApiCopilotkitStatusRoute: ApiCopilotkitStatusRoute,
   ApiCrewStatusRoute: ApiCrewStatusRoute,
   ApiEventsRoute: ApiEventsRoute,
   ApiFilesRoute: ApiFilesRoute,

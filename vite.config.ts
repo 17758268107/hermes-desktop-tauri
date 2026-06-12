@@ -463,35 +463,12 @@ const config = defineConfig(({ mode, command }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-    build: {
-      rollupOptions: {
-        external: [
-          '@copilotkit/runtime',
-          '@copilotkit/runtime/v2',
-          '@copilotkit/runtime/v2/express',
-          '@copilotkit/runtime/v2/hono',
-          '@copilotkit/runtime/v2/node',
-          '@copilotkit/react-core',
-          '@copilotkit/react-ui',
-          '@ai-sdk/openai',
-        ],
-      },
-    },
     ssr: {
       external: [
         'playwright',
         'playwright-core',
         'playwright-extra',
         'puppeteer-extra-plugin-stealth',
-        '@copilotkit/runtime',
-        '@copilotkit/runtime/v2',
-        '@copilotkit/runtime/v2/express',
-        '@copilotkit/runtime/v2/hono',
-        '@copilotkit/runtime/v2/node',
-        '@copilotkit/react-core',
-        '@copilotkit/react-ui',
-        '@ai-sdk/openai',
-        '@ai-sdk/openai/',
       ],
     },
     optimizeDeps: {
