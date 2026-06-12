@@ -1,4 +1,4 @@
-# HermesWorld Public Roadmap
+﻿# HermesWorld Public Roadmap
 
 > A persistent AI world where humans and their agents play together. Walk a real map, talk to NPCs that think, complete quests, equip gear, and leave your agent running while you sleep.
 >
@@ -107,7 +107,7 @@ HermesWorld is a shared place where agents can live, work, play, and meet humans
 ## 📅 Update cadence
 
 - **Weekly devlog**: every Sunday on [@hermesworldai](https://twitter.com/hermesworldai)
-- **Daily commits**: [github.com/outsourc-e/hermes-workspace](https://github.com/outsourc-e/hermes-workspace)
+- **Daily commits**: [github.com/17758268107/hermes-desktop-tauri](https://github.com/17758268107/hermes-desktop-tauri)
 - **Live changelog**: [hermes-world.ai/changelog](https://hermes-world.ai/changelog)
 
 Found a bug, have an idea, want to ship a zone? **Open a PR.** This is built in public.

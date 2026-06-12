@@ -6,7 +6,7 @@ If you discover a security vulnerability in Hermes Workspace, please report it r
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, report via [GitHub Security Advisories](https://github.com/outsourc-e/hermes-workspace/security/advisories) or DM [@ericousodev on X](https://x.com/ericousodev).
+Instead, report via [GitHub Security Advisories](https://github.com/17758268107/hermes-desktop-tauri/security/advisories) or DM [@ericousodev on X](https://x.com/ericousodev).
 
 We will acknowledge your report within 48 hours and aim to provide a fix within 7 days for critical issues.
 
@@ -25,11 +25,11 @@ We will acknowledge your report within 48 hours and aim to provide a fix within 
 - Third-party dependencies (report to the respective maintainer)
 - Social engineering attacks
 
-## Security Measures (v3.0.0+)
+## Security Measures (v2.0.0+)
 
 **Authentication**
 
-- All API routes require authentication as of v3.0.0
+- All API routes require authentication as of v2.0.0
 - Session tokens use timing-safe comparison to prevent timing attacks
 - httpOnly + SameSite=Strict cookies
 - Token revocation on logout
@@ -76,6 +76,6 @@ We will acknowledge your report within 48 hours and aim to provide a fix within 
 
 | Version     | Supported              |
 | ----------- | ---------------------- |
-| v3.x (main) | ✅ Active              |
-| v2.x        | ⚠️ Security fixes only |
-| < v2.0      | ❌ Unsupported         |
+| v2.x (main) | ✅ Active              |
+| v1.x        | ⚠️ Security fixes only |
+| < v1.0      | ❌ Unsupported         |

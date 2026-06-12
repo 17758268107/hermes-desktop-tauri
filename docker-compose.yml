@@ -1,4 +1,4 @@
-# Hermes Workspace + Agent — Docker Compose Setup
+﻿# Hermes Workspace + Agent — Docker Compose Setup
 #
 # Requirements:
 #   - Docker & Docker Compose
@@ -15,7 +15,7 @@
 # Images:
 #   This file pulls pre-built images by default — no local build required.
 #     - nousresearch/hermes-agent:latest  (Hermes Agent, Dockerfile upstream)
-#     - ghcr.io/outsourc-e/hermes-workspace:latest  (this workspace)
+#     - ghcr.io/17758268107/hermes-desktop-tauri:latest  (this workspace)
 #
 #   To build from source instead (e.g. for development), use:
 #     docker compose -f docker-compose.yml -f docker-compose.dev.yml up
@@ -88,7 +88,7 @@ services:
   # The Hermes Workspace Web UI
   # Connects to hermes-agent at http://hermes-agent:8642
   hermes-workspace:
-    image: ghcr.io/outsourc-e/hermes-workspace:latest
+    image: ghcr.io/17758268107/hermes-desktop-tauri:latest
     restart: unless-stopped
     depends_on:
       hermes-agent:

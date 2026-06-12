@@ -1,11 +1,11 @@
-# Docker
+﻿# Docker
 
 Hermes Workspace + Hermes Agent in containers.
 
 ## TL;DR (single-host, localhost-only)
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-workspace
+git clone https://github.com/17758268107/hermes-desktop-tauri
 cd hermes-workspace
 cp .env.example .env
 # add at least one provider key (e.g. OPENROUTER_API_KEY=...)
@@ -157,7 +157,7 @@ The default compose colocates them for simplicity. The split-host setup above is
 
 ## Filing bugs
 
-If your setup matches the playbook above and still breaks, file an issue at <https://github.com/outsourc-e/hermes-workspace/issues> with:
+If your setup matches the playbook above and still breaks, file an issue at <https://github.com/17758268107/hermes-desktop-tauri/issues> with:
 
 1. Your `docker-compose.yml` (redact secrets)
 2. The output of `docker compose logs hermes-workspace 2>&1 | grep '\[gateway\]' | tail -5`

@@ -1,11 +1,11 @@
-# Overnight PR/Issue Shakedown — hermes-workspace
+﻿# Overnight PR/Issue Shakedown — hermes-workspace
 
-**Mission:** Work through the open PRs and issues on `outsourc-e/hermes-workspace`, test/fix/shake them down LOCALLY, and consolidate everything safe into ONE integration PR. Run autonomously overnight. Quality over quantity — never break `main`.
+**Mission:** Work through the open PRs and issues on `17758268107/hermes-desktop-tauri`, test/fix/shake them down LOCALLY, and consolidate everything safe into ONE integration PR. Run autonomously overnight. Quality over quantity — never break `main`.
 
 ## Environment
 - Working clone (USE THIS, never touch /Users/aurora/hermes-workspace — it has uncommitted local work):
   `/Users/aurora/hermes-workspace-swarm`
-- Repo: `outsourc-e/hermes-workspace`. `gh` authed as `outsourc-e` (ADMIN). pnpm. Node 22.
+- Repo: `17758268107/hermes-desktop-tauri`. `gh` authed as `outsourc-e` (ADMIN). pnpm. Node 22.
 - Build: `pnpm build` · Test: `pnpm test` · Lint: `pnpm lint` · Typecheck: `pnpm check`
 - 46 open PRs, 27 open issues at start (2026-06-05 03:32 EDT). `gh pr list --state open`, `gh issue list --state open`.
 

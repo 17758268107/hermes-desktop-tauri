@@ -1,4 +1,4 @@
-# Swarm Mode Quickstart
+﻿# Swarm Mode Quickstart
 
 This quickstart gets a local Hermes Workspace checkout running, confirms profile auto-detection, starts a tmux-backed Hermes Agent, dispatches a first task, and shows where to review the result.
 
@@ -17,7 +17,7 @@ The workspace can still render without tmux, but tmux is what makes the worker s
 ## 1. Clone the workspace
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-workspace.git
+git clone https://github.com/17758268107/hermes-desktop-tauri.git
 cd hermes-workspace
 ```
 

@@ -1,8 +1,8 @@
-# HermesWorld Master Roadmap
+﻿# HermesWorld Master Roadmap
 
 Status: active build sprint
 Owner: Eric / Aurora
-Repo: `outsourc-e/hermes-workspace`
+Repo: `17758268107/hermes-desktop-tauri`
 Scope: HermesWorld inside Hermes Workspace, dashboard/plugin embedded first, standalone later
 
 ## Product thesis

@@ -1,4 +1,4 @@
-# HermesWorld — Master Plan (Single Source of Truth)
+﻿# HermesWorld — Master Plan (Single Source of Truth)
 
 Last updated: 2026-05-06 02:20 EDT
 Owner: Eric (vision/product/taste)
@@ -83,7 +83,7 @@ Anti-drift gate (every output runs through this):
 
 ## 4. Repos
 
-- `outsourc-e/hermes-workspace` — public (browser game lives here)
+- `17758268107/hermes-desktop-tauri` — public (browser game lives here)
 - `outsourc-e/hermesworld-game` — **private** (issues, internal specs, prize logic, secrets, roadmap)
 - `outsourc-e/controlsuite` — desktop client
 - `ocplatform/ocplatform` — agent runtime

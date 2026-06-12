@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to Hermes Workspace are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
-- **`docker compose up` now pulls pre-built images by default** (#82) — `nousresearch/hermes-agent:latest` for the gateway and `ghcr.io/outsourc-e/hermes-workspace:latest` for the UI. Agent state persists in the `claude-data` named volume. Adds `docker-compose.dev.yml` overlay for building from source.
+- **`docker compose up` now pulls pre-built images by default** (#82) — `nousresearch/hermes-agent:latest` for the gateway and `ghcr.io/17758268107/hermes-desktop-tauri:latest` for the UI. Agent state persists in the `claude-data` named volume. Adds `docker-compose.dev.yml` overlay for building from source.
 
 ## [2.5.0] — 2026-06-12
 
@@ -30,7 +30,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **CI build 6-hour timeout** — prerendering tried to connect to gateway (127.0.0.1:8642) in CI/Docker; now skipped when `CI=true`
 - **Docker build 6-hour timeout** — same prerender issue; fixed with `ENV CI=true`
 - **`@copilotkit/runtime` missing from dependencies** — was imported in source but never declared in package.json
+- **`@copilotkit/react-core` missing from dependencies** — added as direct dependency so CI can resolve `@copilotkit/react-core/v2` imports
+- **CopilotKit CSS import fails in CI** — `@copilotkit/react-core/v2/styles.css?url` couldn't be resolved by Rollup; copied locally to `src/styles/copilotkit.css`
+- **`time` crate 0.3.48 breaking change** — pinned to 0.3.47 via `Cargo.lock` (now tracked in git); 0.3.48 was published same day with incompatible API changes
+- **Docker health check always failing** — root path `/` returned 500 due to SSR errors; added `/health` endpoint and updated `Dockerfile` HEALTHCHECK + CI smoke test
 - **`@scarf/scarf` build script blocked** — approved via `onlyBuiltDependencies` in `.npmrc`
+- **Tauri release workflow** — switched from bun to pnpm, reordered pnpm setup before Node.js, simplified to Windows-only matrix
 
 ## [2.4.1] — 2026-06-11
 

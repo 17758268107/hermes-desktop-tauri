@@ -1,4 +1,4 @@
-# Hermes Playground 🌐
+﻿# Hermes Playground 🌐
 
 > The agent MMO. A browser 3D world where you walk around, talk to Hermes Agent NPCs, run quests, level up, and meet other builders. Built for the Nous Research × Kimi hackathon 2026.
 
@@ -19,7 +19,7 @@ So **Hermes turns onboarding into a multiplayer RPG world**. You don't read abou
 ## Try it
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-workspace
+git clone https://github.com/17758268107/hermes-desktop-tauri
 cd hermes-workspace
 pnpm install
 pnpm dev
@@ -181,7 +181,7 @@ Deploy options for the WS relay are listed in `memory/goals/2026-05-03-playgroun
 
 ## Credits
 
-- Built on [Hermes Workspace](https://github.com/outsourc-e/hermes-workspace) and [Hermes Agent](https://github.com/NousResearch/hermes-agent).
+- Built on [Hermes Workspace](https://github.com/17758268107/hermes-desktop-tauri) and [Hermes Agent](https://github.com/NousResearch/hermes-agent).
 - Inspired by RuneScape, PlayROHAN, Lost Ark, and Skyrim. No assets copied — everything is original primitives + Hermes Greek-mythology theming.
 - Hackathon: Nous Research × Kimi 2026.
 

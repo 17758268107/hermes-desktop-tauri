@@ -14,7 +14,7 @@
 
 > Not a chat wrapper. A complete workspace — orchestrate agents, browse memory, manage skills, and control everything from one interface.
 
-> **v2 — zero-fork.** Clone, don't fork. Runs on vanilla [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) installed via Nous's own installer. Chat, sessions, memory, skills, jobs, MCP, terminal, dashboard, Agent View, and Operations are all in vanilla parity. **Conductor** uses the dashboard mission API when available and falls back to Workspace-native Swarm dispatch (`mode: native-swarm`) when the dashboard endpoint is absent, preserving zero-fork behavior ([#262](https://github.com/outsourc-e/hermes-workspace/issues/262)).
+> **v2 — zero-fork.** Clone, don't fork. Runs on vanilla [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) installed via Nous's own installer. Chat, sessions, memory, skills, jobs, MCP, terminal, dashboard, Agent View, and Operations are all in vanilla parity. **Conductor** uses the dashboard mission API when available and falls back to Workspace-native Swarm dispatch (`mode: native-swarm`) when the dashboard endpoint is absent, preserving zero-fork behavior ([#262](https://github.com/17758268107/hermes-desktop-tauri/issues/262)).
 
 ![Hermes Workspace](./docs/screenshots/splash.png)
 
@@ -92,7 +92,7 @@ Three paths — pick the one that matches you:
 ### One-line install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/17758268107/hermes-desktop-tauri/main/install.sh | bash
 ```
 
 This installs `hermes-agent` via Nous's official installer, clones this repo, sets up `.env`, and installs dependencies. Then:
@@ -111,7 +111,7 @@ Open http://localhost:3000. That's it.
 If you already have `hermes-agent` installed (via Nous's official installer, a source checkout, systemd, Docker, or another existing setup) and it's serving the gateway at `http://<host>:8642`, you don't need to reinstall anything — just point the workspace at it.
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-workspace.git
+git clone https://github.com/17758268107/hermes-desktop-tauri.git
 cd hermes-workspace
 pnpm install
 cp .env.example .env
@@ -204,7 +204,7 @@ Our one-liner installer (below) does both steps automatically. If you're using a
 
 ```bash
 # In a new terminal
-git clone https://github.com/outsourc-e/hermes-workspace.git
+git clone https://github.com/17758268107/hermes-desktop-tauri.git
 cd hermes-workspace
 pnpm install
 cp .env.example .env
@@ -421,7 +421,7 @@ If you've already started the workspace, change either URL from **Settings → C
 
 ## 🐳 Docker Quickstart
 
-[![Open in GitHub Codespaces](https://img.shields.io/badge/GitHub%20Codespaces-Open-181717?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=outsourc-e/hermes-workspace)
+[![Open in GitHub Codespaces](https://img.shields.io/badge/GitHub%20Codespaces-Open-181717?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=17758268107/hermes-desktop-tauri)
 
 The Docker setup runs both the **Hermes Agent gateway** and **Hermes Workspace** together.
 
@@ -434,7 +434,7 @@ The Docker setup runs both the **Hermes Agent gateway** and **Hermes Workspace**
 ### Step 1: Configure Environment
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-workspace.git
+git clone https://github.com/17758268107/hermes-desktop-tauri.git
 cd hermes-workspace
 cp .env.example .env
 ```
@@ -461,7 +461,7 @@ docker compose up
 This pulls two pre-built images and starts them:
 
 - **hermes-agent** → `nousresearch/hermes-agent:latest` on port **8642**
-- **hermes-workspace** → `ghcr.io/outsourc-e/hermes-workspace:latest` on port **3000**
+- **hermes-workspace** → `ghcr.io/17758268107/hermes-desktop-tauri:latest` on port **3000**
 
 No local build. First run takes a minute to pull; subsequent starts are instant.
 Agent state (config, sessions, skills, memory, credentials) persists in the
@@ -546,7 +546,7 @@ Deploying Hermes Workspace to a PaaS or home-lab stack? Pull the image
 directly from GitHub Container Registry:
 
 ```
-ghcr.io/outsourc-e/hermes-workspace:latest
+ghcr.io/17758268107/hermes-desktop-tauri:latest
 ```
 
 Available tags:
@@ -561,7 +561,7 @@ Minimal Coolify / Easypanel config:
 
 ```yaml
 service: hermes-workspace
-image: ghcr.io/outsourc-e/hermes-workspace:latest
+image: ghcr.io/17758268107/hermes-desktop-tauri:latest
 port: 3000
 env:
   HERMES_API_URL: http://hermes-agent:8642   # point at your gateway
@@ -832,7 +832,7 @@ The Docker setup runs both automatically — no action needed if using `docker c
 
 | Feature | Status |
 |---|---|
-| Conductor missions | Workspace UI is shipped; uses dashboard mission API when available and Workspace-native Swarm fallback otherwise (see [#262](https://github.com/outsourc-e/hermes-workspace/issues/262)) |
+| Conductor missions | Workspace UI is shipped; uses dashboard mission API when available and Workspace-native Swarm fallback otherwise (see [#262](https://github.com/17758268107/hermes-desktop-tauri/issues/262)) |
 | Native Desktop App (Electron) | Spec'd; PWA install path works today |
 
 ### Coming 🔜
@@ -846,7 +846,7 @@ The Docker setup runs both automatically — no action needed if using `docker c
 
 ## ⭐ Star History
 
-## [![Star History Chart](https://api.star-history.com/svg?repos=outsourc-e/hermes-workspace&type=date&logscale&legend=top-left)](https://www.star-history.com/#outsourc-e/hermes-workspace&type=date&logscale&legend=top-left)
+## [![Star History Chart](https://api.star-history.com/svg?repos=17758268107/hermes-desktop-tauri&type=date&logscale&legend=top-left)](https://www.star-history.com/#17758268107/hermes-desktop-tauri&type=date&logscale&legend=top-left)
 
 ## 💛 Support the Project
 

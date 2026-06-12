@@ -1,13 +1,13 @@
-# syntax=docker/dockerfile:1.6
+﻿# syntax=docker/dockerfile:1.6
 # Hermes Workspace — production Docker image
-# Publishes to ghcr.io/outsourc-e/hermes-workspace
+# Publishes to ghcr.io/17758268107/hermes-desktop-tauri
 #
 # Build locally:
 #   docker build -t hermes-workspace .
 # Run:
 #   docker run -p 3000:3000 -e HERMES_API_URL=http://host.docker.internal:8642 hermes-workspace
 # Or pull pre-built:
-#   docker pull ghcr.io/outsourc-e/hermes-workspace:latest
+#   docker pull ghcr.io/17758268107/hermes-desktop-tauri:latest
 #
 FROM tianon/gosu:1.17-bookworm AS gosu_source
 # ─── build stage ─────────────────────────────────────────────────────────
