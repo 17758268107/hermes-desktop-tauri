@@ -57,7 +57,7 @@ ENV NODE_ENV=production \
 
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD curl -fsS http://127.0.0.1:3000/ >/dev/null || exit 1
+  CMD curl -fsS http://127.0.0.1:3000/health >/dev/null || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 CMD ["node", "--max-old-space-size=2048", "server-entry.js"]

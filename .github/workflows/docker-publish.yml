@@ -85,7 +85,7 @@ jobs:
                 ;;
             esac
 
-            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then
+            if curl -fsS http://127.0.0.1:3000/health >/dev/null; then
               echo "Container stayed alive and served HTTP successfully"
               exit 0
             fi

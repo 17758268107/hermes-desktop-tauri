@@ -167,6 +167,12 @@ async function tryServeStatic(req, res) {
 }
 
 async function requestHandler(req, res) {
+  if (req.method === 'GET' && (req.url === '/health' || req.url === '/healthz')) {
+    res.writeHead(200, { 'Content-Type': 'text/plain' })
+    res.end('ok')
+    return
+  }
+
   // Try static files first (client assets)
   if (req.method === 'GET' || req.method === 'HEAD') {
     const served = await tryServeStatic(req, res)
