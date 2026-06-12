@@ -4,8 +4,8 @@
   "version": "2.5.0",
   "identifier": "com.hermesworkspace.app",
   "build": {
-    "beforeDevCommand": "bun run dev",
-    "beforeBuildCommand": "bun run build",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
     "devUrl": "http://127.0.0.1:3000",
     "frontendDist": "../dist/client"
   },
