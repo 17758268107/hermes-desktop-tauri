@@ -21,6 +21,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy sources and build
 COPY . .
+ENV CI=true
 RUN pnpm build
 
 # ─── runtime stage ────────────────────────────────────────────────────────
