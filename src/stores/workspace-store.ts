@@ -11,6 +11,8 @@ type WorkspaceState = {
   chatPanelOpen: boolean
   /** Session key for the chat panel (defaults to 'main') */
   chatPanelSessionKey: string
+  /** CopilotKit panel open state */
+  copilotPanelOpen: boolean
   /** Mobile keyboard / composer focus — hides tab bar */
   mobileKeyboardOpen: boolean
   mobileKeyboardInset: number
@@ -25,6 +27,8 @@ type WorkspaceState = {
   toggleChatPanel: () => void
   setChatPanelOpen: (open: boolean) => void
   setChatPanelSessionKey: (key: string) => void
+  toggleCopilotPanel: () => void
+  setCopilotPanelOpen: (open: boolean) => void
   setMobileKeyboardOpen: (open: boolean) => void
   setMobileKeyboardInset: (inset: number) => void
   setMobileComposerFocused: (focused: boolean) => void
@@ -39,6 +43,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       activeSubPage: null,
       chatPanelOpen: false,
       chatPanelSessionKey: 'main',
+      copilotPanelOpen: false,
       mobileKeyboardOpen: false,
       mobileKeyboardInset: 0,
       mobileComposerFocused: false,
@@ -60,6 +65,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       setMobileComposerFocused: (focused) =>
         set({ mobileComposerFocused: focused }),
       setChatPanelSessionKey: (key) => set({ chatPanelSessionKey: key }),
+      toggleCopilotPanel: () =>
+        set((s) => ({ copilotPanelOpen: !s.copilotPanelOpen })),
+      setCopilotPanelOpen: (open) => set({ copilotPanelOpen: open }),
     }),
     {
       name: 'hermes-workspace-v1',
@@ -68,6 +76,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         fileExplorerCollapsed: state.fileExplorerCollapsed,
         chatPanelOpen: state.chatPanelOpen,
         chatPanelSessionKey: state.chatPanelSessionKey,
+        copilotPanelOpen: state.copilotPanelOpen,
       }),
     },
   ),

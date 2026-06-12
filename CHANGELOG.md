@@ -8,6 +8,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - **`docker compose up` now pulls pre-built images by default** (#82) — `nousresearch/hermes-agent:latest` for the gateway and `ghcr.io/outsourc-e/hermes-workspace:latest` for the UI. Agent state persists in the `claude-data` named volume. Adds `docker-compose.dev.yml` overlay for building from source.
 
+## [2.5.0] — 2026-06-12
+
+**CopilotKit frontend integration + CI/CD hardening release.**
+
+### Added
+- **CopilotKit frontend fully wired** — `CopilotProvider` wraps the workspace shell, `CopilotPanel` (420px sliding AI assistant) and `CopilotPanelToggle` (✨ floating button) are now rendered on all non-chat routes
+- **Zustand copilot state** — `copilotPanelOpen`, `toggleCopilotPanel`, `setCopilotPanelOpen` added to workspace store with localStorage persistence
+- **CopilotKit CSS** — `@copilotkit/react-core/v2/styles.css` loaded via `<link>` in the root layout
+- **8 Hermes backend tools** registered via `useHermesTools()`: `getServiceStatus`, `listDirectory`, `readFile`, `sendTerminalCommand`, `restartService` (HITL), `getModelList`, `createFile`, `deleteFile` (HITL)
+- **CopilotKit dependencies** — `@copilotkit/runtime@^1.59.0`, `@ai-sdk/openai@^1.2.0` added to package.json
+
+### Changed
+- **Version bump** — package.json, tauri.conf.json, Cargo.toml → 2.5.0
+- **CI workflow** — added `timeout-minutes: 15` and `CI=true` env to prevent prerendering timeout
+- **Dockerfile** — added `ENV CI=true` to skip prerendering; copies `.npmrc` and `pnpm-workspace.yaml`
+- **Vite config** — prerendering disabled when `CI` env is set; removed `build.rollupOptions.external` (CopilotKit now bundled as dependency)
+- **`.npmrc`** — added `onlyBuiltDependencies` for pnpm v11 compatibility (`electron`, `esbuild`, `unrs-resolver`, `@scarf/scarf`)
+
+### Fixed
+- **CI build 6-hour timeout** — prerendering tried to connect to gateway (127.0.0.1:8642) in CI/Docker; now skipped when `CI=true`
+- **Docker build 6-hour timeout** — same prerender issue; fixed with `ENV CI=true`
+- **`@copilotkit/runtime` missing from dependencies** — was imported in source but never declared in package.json
+- **`@scarf/scarf` build script blocked** — approved via `onlyBuiltDependencies` in `.npmrc`
+
 ## [2.4.1] — 2026-06-11
 
 **Auto-update support + repo governance + documentation polish release.**

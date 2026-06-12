@@ -6,64 +6,59 @@
 # Last matching pattern wins.  Use GitHub usernames or @org/team names.
 # See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# NOTE: Previously all paths were assigned to @17758268107 (a private org
-# outside this repo).  Those references have been replaced with the repo
-# owner (@17758268107), the only collaborator on the project.  When teams
-# are created, swap the placeholders below for real `@org/team` mentions.
-
 # ── Auth & authentication middleware ──────────────────────────────────────
-/src/server/auth-middleware.ts       @17758268107
-/src/server/auth-middleware.test.ts  @17758268107
-/src/routes/api/auth.ts              @17758268107
-/src/routes/api/auth-check.ts        @17758268107
-/src/routes/api/oauth.device-code.ts @17758268107
-/src/routes/api/oauth.poll-token.ts  @17758268107
+/src/server/auth-middleware.ts       @outsourc-e
+/src/server/auth-middleware.test.ts  @outsourc-e
+/src/routes/api/auth.ts              @outsourc-e
+/src/routes/api/auth-check.ts        @outsourc-e
+/src/routes/api/oauth.device-code.ts @outsourc-e
+/src/routes/api/oauth.poll-token.ts  @outsourc-e
 
 # ── Security: rate limiter, security policy, security CI ─────────────────
-/src/server/rate-limit.ts            @17758268107
-/src/server/rate-limit.test.ts       @17758268107
-/SECURITY.md                         @17758268107
-/.github/workflows/security.yml      @17758268107
+/src/server/rate-limit.ts            @outsourc-e
+/src/server/rate-limit.test.ts       @outsourc-e
+/SECURITY.md                         @outsourc-e
+/.github/workflows/security.yml      @outsourc-e
 
 # ── CI/CD workflows (all) ────────────────────────────────────────────────
-/.github/workflows/                  @17758268107
+/.github/workflows/                  @outsourc-e
 
 # ── Docker & container configs ───────────────────────────────────────────
-/Dockerfile                          @17758268107
-/docker-compose.yml                  @17758268107
-/docker-compose.dev.yml              @17758268107
-/docker/                             @17758268107
-/.dockerignore                       @17758268107
-/.devcontainer/                      @17758268107
+/Dockerfile                          @outsourc-e
+/docker-compose.yml                  @outsourc-e
+/docker-compose.dev.yml              @outsourc-e
+/docker/                             @outsourc-e
+/.dockerignore                       @outsourc-e
+/.devcontainer/                      @outsourc-e
 
 # ── Server-side infrastructure (all) ─────────────────────────────────────
-/src/server/                         @17758268107
+/src/server/                         @outsourc-e
 
 # ── Nix packaging & flake ────────────────────────────────────────────────
-/flake.nix                           @17758268107
-/flake.lock                          @17758268107
-/nix/                                @17758268107
+/flake.nix                           @outsourc-e
+/flake.lock                          @outsourc-e
+/nix/                                @outsourc-e
 
 # ── Root config & infrastructure ─────────────────────────────────────────
-/package.json                        @17758268107
-/pnpm-lock.yaml                      @17758268107
-/pnpm-workspace.yaml                 @17758268107
-/tsconfig.json                       @17758268107
-/vite.config.ts                      @17758268107
-/wrangler.jsonc                      @17758268107
-/eslint.config.js                    @17758268107
-/prettier.config.js                  @17758268107
-/electron-builder.config.cjs         @17758268107
+/package.json                        @outsourc-e
+/pnpm-lock.yaml                      @outsourc-e
+/pnpm-workspace.yaml                 @outsourc-e
+/tsconfig.json                       @outsourc-e
+/vite.config.ts                      @outsourc-e
+/wrangler.jsonc                      @outsourc-e
+/eslint.config.js                    @outsourc-e
+/prettier.config.js                  @outsourc-e
+/electron-builder.config.cjs         @outsourc-e
 
 # ── Electron (desktop app) ───────────────────────────────────────────────
-/electron/                           @17758268107
+/electron/                           @outsourc-e
 
 # ── Server entry point ───────────────────────────────────────────────────
-/server-entry.js                     @17758268107
+/server-entry.js                     @outsourc-e
 
 # ── Install & bootstrap ──────────────────────────────────────────────────
-/install.sh                          @17758268107
-/.env.example                        @17758268107
+/install.sh                          @outsourc-e
+/.env.example                        @outsourc-e
 
 # ── GitHub Actions directory (non-workflow files) ────────────────────────
-/.github/                            @17758268107
+/.github/                            @outsourc-e
