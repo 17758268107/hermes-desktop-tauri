@@ -1,9 +1,7 @@
 # Tauri 2 desktop release pipeline
 #
-# Cross-platform matrix that builds signed Tauri installers for Windows
-# (NSIS .exe + MSI), macOS (DMG, arm64 + x64 universal), and Linux (deb +
-# AppImage). Bundled updater artifacts are uploaded to a "Tauri update
-# artifacts" workflow artifact and the installable bundles are attached
+# Builds signed Tauri installers for Windows (NSIS .exe + MSI).
+# Bundled updater artifacts (.exe.sig) are uploaded and attached
 # to the GitHub Release that triggered this workflow.
 #
 # Triggers:
@@ -43,18 +41,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-latest
-            target: aarch64-apple-darwin
-            args: --target aarch64-apple-darwin
-            bundle_ext: dmg
           - platform: windows-latest
             target: x86_64-pc-windows-msvc
             args: --target x86_64-pc-windows-msvc
             bundle_ext: nsis
-          - platform: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            args: --target x86_64-unknown-linux-gnu
-            bundle_ext: deb,appimage
 
     runs-on: ${{ matrix.platform }}
 
@@ -87,19 +77,6 @@ jobs:
 
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Install Linux build dependencies
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            libwebkit2gtk-4.1-dev \
-            libgtk-3-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            patchelf \
-            file \
-            wget
 
       - name: Import Tauri signing key
         shell: bash
