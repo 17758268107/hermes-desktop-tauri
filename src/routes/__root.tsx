@@ -8,7 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import appCss from '../styles.css?url'
-import copilotCss from '@copilotkit/react-core/v2/styles.css?url'
+import copilotCss from '../styles/copilotkit.css?url'
 import { getRootSurfaceState } from './-root-layout-state'
 import type {AuthStatus} from '@/lib/claude-auth';
 import '@/lib/tauri-bridge'
